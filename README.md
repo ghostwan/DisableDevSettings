@@ -29,9 +29,19 @@ This project shows how to use system / hidden API in Android.
 
 For most API you need to sign your application with the platform certificate (keystore) of your device:
 
-For AOSP one you can find those certificate here : 
+For AOSP,  you can find the platform certificates here : 
 
-[AOSP repository](https://android.googlesource.com/platform/build/+/master/target/product/security)
+[AOSP repository](https://github.com/aosp-mirror/platform_build/tree/master/target/product/security)
+You can transform platform.pk8 and platform.x509.pem in a keystore by doing:
+```bash
+openssl pkcs8 -inform DER -nocrypt -in platform.pk8 -out key.pem
+
+openssl pkcs12 -export -in platform.x509.pem -inkey key.pem -out platform.p12 -password pass:my_key_password -name aosp_platform_key
+
+keytool -importkeystore -deststorepass my_keystore_password -destkeystore platform.keystore -srckeystore platform.p12 -srcstoretype PKCS12 -srcstorepass my_key_password
+
+keytool -list -v -keystore platform.keystore
+```
 
 To know more about those certificate see:
 
